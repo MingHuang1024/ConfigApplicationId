@@ -1,0 +1,76 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 28
+    defaultConfig {
+        applicationId "com.example.configapplicationid"
+        minSdkVersion 15
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+    }
+
+    //配置签名，注意：此代码块必须放在"buildTypes"代码块的上面，不然会找不到签名配置文件
+    signingConfigs {
+        //  debug {
+        //  debug 版本可以不配置签名文件，将默认使用系统自带的签名文件，
+        //  win7系统在这里：C:\Users\Huangming\.android\debug.keystore，其中的 Huangming 是我在win7上的用户名
+        //  当然，如果你想配置的话也可以像下面的release版一样配置一下即可
+        //  }
+        release {
+            // 签名文件放在app根目录下
+            storeFile file("../app/keystore.jks")
+            storePassword "123456"
+            keyAlias "aaa"
+            keyPassword "123456"
+            // 以上几个密码都是在生成 keystore.jks 文件时自己设置的
+            // 生成的方式：Build-->Generate Signed Bundle/APK...
+        }
+    }
+
+    // 配置编译类型
+    // 重点是配置applicationId的后缀，使得两个版本的applicationId不一样，这样两个版本的apk就可以装在同一台手机上
+    buildTypes {
+        debug {
+            // 在applicationId后面添加了一个后缀形成了debug的包名，与release区分开来
+            // release版本的applicationId就是defaultConfig里面的applicationId，不需要额外配置
+            applicationIdSuffix '.abc'
+
+            //签名配置
+            // 可以不配置，直接使用系统自带的签名文件
+            // signingConfig signingConfigs.debug
+
+            // 动态配置在AndroidManifest.xml中的app名称
+            // 注意：这样配置的话要将AndroidManifest.xml中的 app_name 注释掉，不然会报名字重复的错误
+            resValue "string", "app_name", "测试包"
+
+            // 动态配置测试环境base_url，如：http://www.com.abc.degbug
+            // 在java代码中用 BuildConfig.BASE_URL 来获取从这里设置进去的 base url
+            buildConfigField "String", "BASE_URL", "\"http://www.com.abc.degbug\""
+        }
+        release {
+            // 签名配置
+            signingConfig signingConfigs.release
+
+            // 动态配置在AndroidManifest.xml中的app名称
+            // 注意：这样配置的话要将AndroidManifest.xml中的 app_name 注释掉，不然会报名字重复的错误
+            resValue "string", "app_name", "生产包"
+
+            // 动态配置生产环境base_url，如：http://www.com.abc.release
+            // 在java代码中用 BuildConfig.BASE_URL 来获取从这里设置进去的 base url
+            buildConfigField "String", "BASE_URL", "\"http://www.com.abc.release\""
+
+            // 为了看日志，把debug开关打开
+            debuggable true
+
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+}
