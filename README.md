@@ -1,1 +1,3 @@
-一个通过配置gradle实现环境分离的demo
+涓�涓�氳繃閰嶇疆gradle瀹炵幇鐜鍒嗙鐨刣emo
+
+鐩稿叧鍗氬锛歔https://blog.csdn.net/MingHuang2017/article/details/88780170](https://blog.csdn.net/MingHuang2017/article/details/88780170)
